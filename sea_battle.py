@@ -5,6 +5,7 @@ import time
 
 class SeaBattle:  # класс морского боя
     def __init__(self, boats=None, side=10, map_boats=None):  # инициализация
+        self.last_my_shot = [0, 0]  # для записи выстрела
         sands_error = False
         self.is_complete = True
         start_time = time.time()  # расстановка кораблей
@@ -425,6 +426,7 @@ class SeaBattle:  # класс морского боя
         max_x = max_list.index(max(max_list))
         max_y = map_chances[max_x].index(max(map_chances[max_x]))
         x, y = max_x, max_y
+        self.last_my_shot = [x, y]  # записываем выстрел
 
         for eee in map_chances:
             d = list()
@@ -480,6 +482,9 @@ class SeaBattle:  # класс морского боя
                     return "not_shot_already_hit"  # если уже стреляли и попали
                 else:
                     return "not_shot_no_ships"  # если пусто
+
+    def get_last_my_shot(self):
+        return self.last_my_shot
 
     @staticmethod
     def help():
