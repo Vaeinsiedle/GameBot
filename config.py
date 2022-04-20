@@ -1,4 +1,4 @@
-TOKEN = 'OTU4MzcyMDgzMjkxNzg3MjY1.YkMXjg.ex_CLr9_96JhbNrVuWUC4kxNvcw' # Токен Степана
+TOKEN = 'OTU4MzcyMDgzMjkxNzg3MjY1.YkMXjg.uJp76Kl3ogpytqKX1UrikDaXLow' # Токен Степана
 
 POST_ID = 958393286547091526 # Id поста
 
