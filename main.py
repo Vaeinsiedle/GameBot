@@ -50,9 +50,9 @@ async def on_raw_reaction_add(payload):
                 if role.id == 958387381067739156:
                     print(1)
                     db_sess = db_session.create_session()
-                    if not db_sess.query(User).filter(User.id_discord == bot.user.id).first():
+                    if not db_sess.query(User).filter(User.id_discord == payload.user_id).first():
                         user = User()
-                        user.id_discord = message.author.id
+                        user.id_discord = payload.user_id
                         db_sess.add(user)
                         db_sess.commit()
 
@@ -88,7 +88,6 @@ dict ={}
 
 class Client(commands.Bot):
     @bot.command(pass_context=True)
-    @commands.has_permissions(administrator=True)
     async def help(ctx):
         emb = discord.Embed(title='Навигация по командам', color=discord.Color.green())
         emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
