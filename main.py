@@ -529,14 +529,22 @@ class Client(commands.Bot):
             emb = discord.Embed(title='Какие параметры игры применить?', color=discord.Color.light_grey())
             emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
             emb.add_field(name='Выберите:', value="3 - классика (ставка * 1)\n"
-                                                  "1 - поле 6*6, 4 1-палубных, 2 2-палубных, 1 3-палубный (ставка * 0.3)\n"
-                                                  "2 - поле 8*8, 4 1-палубных, 3 2-палубных, 2 3-палубных, 1 4-палубный (ставка * 0.7)\n"
-                                                  "4 - поле 10*10, 5 1-палубных, 4 2-палубных, ..., 1 5-палубный (ставка * 1.5)\n"
-                                                  "5 - поле 14*14, 6 1-палубных, 5 2-палубных, ..., 1 6-палубный (ставка * 2)\n"
-                                                  "6 - поле 16*16, 7 1-палубных, 6 2-палубных, ..., 1 7-палубный (ставка * 3)\n"
-                                                  "7 - поле 20*20, 8 1-палубных, 7 2-палубных, ..., 1 8-палубный (ставка * 6)\n"
-                                                  "8 - поле 10*10, 6 1-палубных, 9 2-палубных, 2 3-палубных (ставка * 1)\n"
-                                                  "9 - поле 15*15, 7 1-палубных, 16 2-палубных, 8 3-палубных (ставка * 1.5)")
+                                                  "1 - поле 6*6, 4 1-палубных, 2 2-палубных, 1 3-палубный "
+                                                  "(ставка * 0.3)\n"
+                                                  "2 - поле 8*8, 4 1-палубных, 3 2-палубных, 2 3-палубных, 1 4-палубный"
+                                                  " (ставка * 0.7)\n"
+                                                  "4 - поле 10*10, 5 1-палубных, 4 2-палубных, ..., 1 5-палубный "
+                                                  "(ставка * 1.5)\n"
+                                                  "5 - поле 14*14, 6 1-палубных, 5 2-палубных, ..., 1 6-палубный "
+                                                  "(ставка * 2)\n"
+                                                  "6 - поле 16*16, 7 1-палубных, 6 2-палубных, ..., 1 7-палубный "
+                                                  "(ставка * 3)\n"
+                                                  "7 - поле 20*20, 8 1-палубных, 7 2-палубных, ..., 1 8-палубный "
+                                                  "(ставка * 6)\n"
+                                                  "8 - поле 10*10, 6 1-палубных, 9 2-палубных, 2 3-палубных "
+                                                  "(ставка * 1)\n"
+                                                  "9 - поле 15*15, 7 1-палубных, 16 2-палубных, 8 3-палубных "
+                                                  "(ставка * 1.5)")
             vars_1 = [[6, [4, 2, 1], 1.3], [8, [4, 3, 2, 1], 1.7], [10, [4, 3, 2, 1], 2], [10, [5, 4, 3, 2, 1], 2.5],
                       [14, [6, 5, 4, 3, 2, 1], 3], [16, [7, 6, 5, 4, 3, 2, 1], 4], [20, [8, 7, 6, 5, 4, 3, 2, 1], 7],
                       [10, [6, 9, 2], 2], [15, [7, 16, 8], 2.5]]
@@ -546,180 +554,208 @@ class Client(commands.Bot):
                 return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower().isdigit() and int(msg.content.lower()) > 0 and int(msg.content.lower()) < 10
 
             def check2(msg):
-                return msg.author == ctx.author and msg.channel == ctx.channel and " " in msg.content.lower() and len(msg.content.lower().split(" ")) == 2 and msg.content.lower().split(" ")[0].isdigit() and msg.content.lower().split(" ")[1].isdigit() and int(msg.content.lower().split(" ")[0]) > 0 and int(msg.content.lower().split(" ")[0]) <= vars_1[int(user_num) - 1][0] and int(msg.content.lower().split(" ")[1]) > 0 and int(msg.content.lower().split(" ")[1]) <= vars_1[int(user_num) - 1][0]
+                return msg.author == ctx.author and msg.channel == ctx.channel and " " in msg.content.lower() and len(msg.content.lower().split(" ")) == 2 and msg.content.lower().split(" ")[0].isdigit() and msg.content.lower().split(" ")[1].isdigit() and int(msg.content.lower().split(" ")[0]) > 0 and int(msg.content.lower().split(" ")[0]) <= vars_1[int(user_num) - 1][0] and int(msg.content.lower().split(" ")[1]) > 0 and int(msg.content.lower().split(" ")[1]) <= vars_1[int(user_num) - 1][0] or msg.content.lower() == "stop"
 
             user_num = (await bot.wait_for('message', check=check)).content.lower()
             dict[ctx.author.id] = SeaBattle(side=vars_1[int(user_num) - 1][0], boats=vars_1[int(user_num) - 1][1])
+            game = dict[ctx.author.id]
+            await ctx.send('Игра запущена! для досрочного завершения отправте "stop", но тогда ваша ставка сгорит')
 
-
-            print(user_num)
-            def pr(f):
-                a = (f.draw(my_map=False, map_shots=True)).split("\n")
-                b = (f.draw(my_map=False, map_shots=False)).split("\n")
+            def pr(f, who):
+                b = (f.draw(my_map=False, map_shots=True)).split("\n")
+                a = (f.draw(my_map=False, map_shots=False)).split("\n")
                 a[0] = a[0] + " "
                 str_22 = ""
-                if user_num in [1, 2, 3, 4, 5, 8]:
-                    for q in range(len(a)):
-                        str_22 += a[q] + "" + b[q]
-                        str_22 += "\n"
-                else:
+                if who:
                     for q in range(len(a)):
                         str_22 += a[q]
                         str_22 += "\n"
+                else:
                     for q in range(len(a)):
                         str_22 += b[q]
                         str_22 += "\n"
-                str_22 = "```css" + str_22 + "```"
+                str_22 = "```excel\n" + str_22 + "\n```"
                 return str_22
 
-
-            def game_over_a(player_win):
-                if player_win:
-                    pass
-                else:
-                    pass
+            await ctx.send("Ваше поле:")
+            await ctx.send(pr(game, True))
+            await ctx.send("Поле ИИ:")
+            await ctx.send(pr(game, False))
+            emb = discord.Embed(title="Стреляйте!", color=discord.Color.gold())
+            emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+            await ctx.send(embed=emb)
 
             while 1:
                 try:
-                    hit = (await bot.wait_for('message', check=check2)).content.lower().split(" ")
-                    stat = dict[ctx.author.id].enemy_shot(int(hit[0]), int(hit[1]))
-                    if stat == "miss":
 
-                        emb = discord.Embed(title="Мимо", color=discord.Color.red())
+                    hit = (await bot.wait_for('message', check=check2)).content.lower()
+                    if hit == "stop":
+                        emb = discord.Embed(title="Игра прервана, ваша ставка сгорела", color=discord.Color.red())
                         emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                        emb.add_field(name="Ход ИИ", value=f"")
                         await ctx.send(embed=emb)
 
-                        await ctx.send(pr(dict[ctx.author.id]))
+                        user.balance -= bet
+                        emb = discord.Embed(title="Ваш баланс " + str(user.balance), color=discord.Color.red())
+                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                        await ctx.send(embed=emb)
+
+                        break
+                    hit = hit.split(" ")
+                    stat = game.enemy_shot(int(hit[0]), int(hit[1]))
+                    if stat == "miss":
+
+                        emb = discord.Embed(title="Мимо, Ход ИИ", color=discord.Color.blue())
+                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                        await ctx.send(embed=emb)
+
+                        # карта печатается потом
+                    exit_t = False
                     while stat == "hit" or stat == "kill" or stat == "not_shot_already_hit" or \
                             stat == "not_shot_no_ships" or stat == "input_error":
                         if stat == "hit" or stat == "kill":
                             if stat == "hit":
 
-                                emb = discord.Embed(title="Отличное попадание!", color=discord.Color.red())
+                                emb = discord.Embed(title="Отличное попадание! Ваш ход", color=discord.Color.gold())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Ваш ход", value=f"")
                                 await ctx.send(embed=emb)
 
-                                await ctx.send(pr(dict[ctx.author.id]))
+                                await ctx.send(pr(game, False))
                             if stat == "kill":
 
-                                emb = discord.Embed(title="Корабль потоплен!", color=discord.Color.red())
+                                emb = discord.Embed(title="Корабль потоплен! Ваш ход", color=discord.Color.gold())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Ваш ход", value=f"")
                                 await ctx.send(embed=emb)
 
-                                await ctx.send(pr(dict[ctx.author.id]))
+                                await ctx.send(pr(game, False))
                         if stat == "not_shot_already_hit" or stat == "not_shot_no_ships" or stat == "input_error":
                             if stat == "not_shot_already_hit":
 
-                                emb = discord.Embed(title="Ошибка", color=discord.Color.red())
+                                emb = discord.Embed(title="Ошибка! Сюда уже стреляли", color=discord.Color.orange())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Сюда уже стреляли", value=f"")
                                 await ctx.send(embed=emb)
 
                             elif stat == "not_shot_no_ships":
 
-                                emb = discord.Embed(title="Ошибка", color=discord.Color.red())
+                                emb = discord.Embed(title="Ошибка! Здесь нет корабля", color=discord.Color.orange())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Здесь нет кораблей", value=f"")
                                 await ctx.send(embed=emb)
 
                             else:
 
-                                emb = discord.Embed(title="Ошибка", color=discord.Color.red())
+                                emb = discord.Embed(title="Ошибка ввода", color=discord.Color.orange())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Ошибка ввода", value=f"")
                                 await ctx.send(embed=emb)
 
-                            await ctx.send(pr(dict[ctx.author.id]))
-                        hit = (await bot.wait_for('message', check=check2)).content.lower().split(" ")
-                        stat = dict[ctx.author.id].enemy_shot(int(hit[0]), int(hit[1]))
-                        if stat == "miss":
+                            await ctx.send(pr(game, False))
 
-                            emb = discord.Embed(title="Мимо", color=discord.Color.red())
+                        hit = (await bot.wait_for('message', check=check2)).content.lower()
+                        if hit == "stop":
+                            emb = discord.Embed(title="Игра прервана, ваша ставка сгорела", color=discord.Color.red())
                             emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                            emb.add_field(name="Ход ИИ", value=f"")
                             await ctx.send(embed=emb)
 
-                            await ctx.send(pr(dict[ctx.author.id]))
-                    if stat == "game_over":
-                        game_over_a(True)
+                            user.balance -= bet
+                            emb = discord.Embed(title="Ваш баланс " + str(user.balance), color=discord.Color.red())
+                            emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                            await ctx.send(embed=emb)
 
-                        emb = discord.Embed(title="Вы выиграли!", color=discord.Color.red())
-                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                        emb.add_field(name="Поздравляем)", value=f"")
-                        await ctx.send(embed=emb)
+                            exit_t = True
+                            break
+                        hit = hit.split(" ")
 
-                        await ctx.send(pr(dict[ctx.author.id]))
+                        stat = game.enemy_shot(int(hit[0]), int(hit[1]))
+                        if stat == "miss":
+
+                            emb = discord.Embed(title="Мимо, ход ИИ", color=discord.Color.blue())
+                            emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                            await ctx.send(embed=emb)
+
+                    if exit_t:
                         break
 
-                    time.sleep(1)
-                    stat = dict[ctx.author.id].my_shot()
-                    await ctx.send("ИИ стреляет " + dict[ctx.author.id].get_last_my_shot()[0] + " " +
-                              dict[ctx.author.id].get_last_my_shot()[1])
-                    if stat == "miss":
+                    if stat == "game_over":
 
-                        emb = discord.Embed(title="ИИ промахнулся", color=discord.Color.red())
+                        emb = discord.Embed(title="Вы выиграли! Поздравляем)", color=discord.Color.green())
                         emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                        emb.add_field(name="Ваш ход", value=f"")
                         await ctx.send(embed=emb)
 
-                        await ctx.send(pr(dict[ctx.author.id]))
+                        await ctx.send(pr(game, False))
+
+                        user.balance += int(vars_1[int(user_num) - 1][-1] * bet // 1)
+                        emb = discord.Embed(
+                            title="Засчитано " + str(int(vars_1[int(user_num) - 1][-1] * bet // 1)) + ", ваш баланс " + str(
+                                user.balance), color=discord.Color.green())
+                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                        await ctx.send(embed=emb)
+
+                        break
+
+                    stat = game.my_shot
+                    if stat == "miss":
+
+                        await ctx.send(pr(game, True))
+
+                        emb = discord.Embed(title="ИИ стреляет " + str(game.get_last_my_shot()[0]) + " " + str(game.get_last_my_shot()[1]) + " - мимо, ваш ход", color=discord.Color.gold())
+                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                        await ctx.send(embed=emb)
+
+                        await ctx.send(pr(game, False))
                     while stat == "hit" or stat == "kill" or stat == "not_shot_already_hit" or \
                             stat == "not_shot_no_ships" or stat == "input_error":
                         if stat == "hit" or stat == "kill":
                             if stat == "hit":
 
-                                emb = discord.Embed(title="В наш корабль попали", color=discord.Color.red())
+                                await ctx.send(pr(game, True))
+
+                                emb = discord.Embed(title="В наш корабль попали! " + "ИИ стрелял " + str(game.get_last_my_shot()[0]) + " " + str(game.get_last_my_shot()[1]) + ". Ход ИИ", color=discord.Color.blue())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Ход ИИ", value=f"")
                                 await ctx.send(embed=emb)
 
-                                await ctx.send(pr(dict[ctx.author.id]))
                             if stat == "kill":
+                                await ctx.send(pr(game, True))
 
-                                emb = discord.Embed(title="Наш корабль потоплен!", color=discord.Color.red())
+                                emb = discord.Embed(title="Наш корабль потоплен! " + "ИИ стрелял " + str(game.get_last_my_shot()[0]) + " " + str(game.get_last_my_shot()[1]) + ". Ход ИИ", color=discord.Color.blue())
                                 emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                                emb.add_field(name="Ход ИИ", value=f"")
                                 await ctx.send(embed=emb)
 
-                                await ctx.send(pr(dict[ctx.author.id]))
                             time.sleep(1)
-                        stat = dict[ctx.author.id].my_shot()
-                        await ctx.send("ИИ стреляет " + dict[ctx.author.id].get_last_my_shot()[0] + " " +
-                                  dict[ctx.author.id].get_last_my_shot()[1])
+                        stat = game.my_shot
                         if stat == "miss":
 
-                            emb = discord.Embed(title="ИИ промахнулся", color=discord.Color.red())
+                            await ctx.send(pr(game, True))
+
+                            emb = discord.Embed(title="ИИ стреляет " + str(game.get_last_my_shot()[0]) + " " + str(
+                                game.get_last_my_shot()[1]) + " - мимо, ваш ход", color=discord.Color.gold())
                             emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                            emb.add_field(name="Ваш ход", value=f"")
                             await ctx.send(embed=emb)
 
-                            await ctx.send(pr(dict[ctx.author.id]))
-                            time.sleep(1)
+                            await ctx.send(pr(game, False))
                     if stat == "game_over":
-                        game_over_a(False)
 
-                        emb = discord.Embed(title="ИИ выиграл!", color=discord.Color.red())
+                        emb = discord.Embed(title="ИИ выиграл! Что ж, повезёт в следующий раз", color=discord.Color.red())
                         emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                        emb.add_field(name="Что ж, повезёт в следующий раз", value=f"")
                         await ctx.send(embed=emb)
 
-                        await ctx.send(pr(dict[ctx.author.id]))
+                        await ctx.send(pr(game, True))
+
+                        user.balance -= bet
+                        emb = discord.Embed(title="Вы потеряли " + str(bet) + ", ваш баланс " + str(user.balance),
+                                            color=discord.Color.red())
+                        emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+                        await ctx.send(embed=emb)
+
                         break
 
                 except:
-
-                    emb = discord.Embed(title="Ошибка", color=discord.Color.red())
+                    emb = discord.Embed(title="Ошибка ввода 1", color=discord.Color.orange())
                     emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
-                    emb.add_field(name="Ошибка ввода", value=f"")
                     await ctx.send(embed=emb)
 
-                    await ctx.send(pr(dict[ctx.author.id]))
+                    await ctx.send(pr(game))
             db_sess.commit()
         except Exception as e:
-            emb = discord.Embed(title='Ошибка', color=discord.Color.red())
+
+            emb = discord.Embed(title='Ошибка', color=discord.Color.orange())
             emb.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
             emb.add_field(name='Исключение:', value="Что-то пошло не так, пожалуйста, попробуйте ещё раз")
             await ctx.send(embed=emb)

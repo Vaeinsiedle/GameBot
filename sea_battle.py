@@ -264,8 +264,8 @@ class SeaBattle:  # класс морского боя
         x, y, = int(x), int(y)
         if self.my_map_boats[x][y] is None or self.my_map_boats[x][y] == "██":  # если что-то есть или нет, то
             if self.my_map_boats[x][y] is None:
-                self.my_map_boats[x][y] = ".."  # если там пусто, то рисуем выстрел и выходим
-                self.enemy_map_shots[x][y] = ".."
+                self.my_map_boats[x][y] = "¦¦"  # если там пусто, то рисуем выстрел и выходим
+                self.enemy_map_shots[x][y] = "¦¦"
                 return "miss"
             if self.my_map_boats[x][y] == "██":  # если есть корабль
                 self.my_map_boats[x][y] = "XX"  # рисуем попадание
@@ -291,9 +291,9 @@ class SeaBattle:  # класс морского боя
                                                     if self.my_map_boats[self.boats_dict_copy[q][t][0] +
                                                                          u][self.boats_dict_copy[q][t][1] + i] is None:
                                                         self.my_map_boats[self.boats_dict_copy[q][t][0] +
-                                                                          u][self.boats_dict_copy[q][t][1] + i] = ".."
+                                                                          u][self.boats_dict_copy[q][t][1] + i] = "¦¦"
                                                         self.enemy_map_shots[self.boats_dict_copy[q][t][0] + u][
-                                                            self.boats_dict_copy[q][t][1] + i] = ".."
+                                                            self.boats_dict_copy[q][t][1] + i] = "¦¦"
                                                 except BaseException:
                                                     pass
                                 # проверяем на выигрыш
@@ -307,7 +307,7 @@ class SeaBattle:  # класс морского боя
                                 return "kill"  # возврщаем что корабль потоплен
                 return "hit"  # возврщаем что в корабль попали
         else:  # если стреляли
-            if self.my_map_boats[x][y] == "XX" or self.my_map_boats[x][y] == "##" or self.my_map_boats[x][y] == "..":
+            if self.my_map_boats[x][y] == "XX" or self.my_map_boats[x][y] == "##" or self.my_map_boats[x][y] == "¦¦":
                 if self.my_map_boats[x][y] == "XX" or self.my_map_boats[x][y] == "##":
                     return "not_shot_already_hit"  # если уже стреляли и попали
                 else:
@@ -339,7 +339,7 @@ class SeaBattle:  # класс морского боя
                     map_chances[q][w] = 0
         for q in range(len(self.enemy_map_boats)):  # если уже потоплено или пусто то ноль
             for w in range(len(self.enemy_map_boats)):
-                if self.enemy_map_boats[q][w] == ".." or self.enemy_map_boats[q][w] == "##" or \
+                if self.enemy_map_boats[q][w] == "¦¦" or self.enemy_map_boats[q][w] == "##" or \
                         self.enemy_map_boats[q][w] == "XX":
                     map_chances[q][w] = 0
         for q in range(len(self.enemy_map_boats)):  # ищем подстреленные корабли
@@ -428,15 +428,10 @@ class SeaBattle:  # класс морского боя
         x, y = max_x, max_y
         self.last_my_shot = [x, y]  # записываем выстрел
 
-        for eee in map_chances:
-            d = list()
-            for e in eee:
-                d.append(str(e))
-            print("\t".join(d))
         # дальше перерисовка полей
         if self.enemy_map_boats[x][y] is None or self.enemy_map_boats[x][y] == "██":  # если что-то есть или нет, то
             if self.enemy_map_boats[x][y] is None:
-                self.enemy_map_boats[x][y] = ".."  # если там пусто, то рисуем выстрел и выходим
+                self.enemy_map_boats[x][y] = "¦¦"  # если там пусто, то рисуем выстрел и выходим
                 return "miss"
             if self.enemy_map_boats[x][y] == "██":  # если есть корабль
                 self.enemy_map_boats[x][y] = "XX"  # рисуем попадание
@@ -461,7 +456,7 @@ class SeaBattle:  # класс морского боя
                                                                             u][self.enemy_boats_dict_copy[q][t][1] +
                                                                                i] is None:
                                                         self.enemy_map_boats[self.enemy_boats_dict_copy[q][t][0] + u][
-                                                            self.enemy_boats_dict_copy[q][t][1] + i] = ".."
+                                                            self.enemy_boats_dict_copy[q][t][1] + i] = "¦¦"
                                                 except BaseException:
                                                     pass
                                 # проверяем на выигрыш
@@ -477,7 +472,7 @@ class SeaBattle:  # класс морского боя
                 return "hit"  # возврщаем что в корабль попали
         else:  # если стреляли
             if self.enemy_map_boats[x][y] == "XX" or self.enemy_map_boats[x][y] == "##" or \
-                    self.enemy_map_boats[x][y] == "..":
+                    self.enemy_map_boats[x][y] == "¦¦":
                 if self.enemy_map_boats[x][y] == "XX" or self.enemy_map_boats[x][y] == "##":
                     return "not_shot_already_hit"  # если уже стреляли и попали
                 else:
