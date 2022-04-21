@@ -99,7 +99,7 @@ class Client(commands.Bot):
         emb.add_field(name='!roulette', value='Мини-игра Рулетка', inline=False)
         #emb.add_field(name='!capitals', value='Мини-игра Угадай столицу страны', inline=False)
         #emb.add_field(name='!country', value='Мини-игра Угадай страну', inline=False)
-        emb.add_field(name='!ttt', value='Мини-игра Крестики-Нолики', inline=False)
+        emb.add_field(name='!tictactoe', value='Мини-игра Крестики-Нолики', inline=False)
         emb.add_field(name='!place', value='Команда для игры в Крестики-Нолики (от 1 до 9)', inline=False)
         emb.add_field(name='!sb', value='Игра Морской бой', inline=False)
         emb.add_field(name='!ball', value='Хрустальный шар', inline=False)
